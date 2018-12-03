@@ -8,9 +8,11 @@ import org.neo4j.driver.v1.*;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
+import org.neo4j.driver.v1.exceptions.ServiceUnavailableException;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;
+import java.sql.SQLTimeoutException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +44,30 @@ public class DaoNeo4j implements IDao, AutoCloseable{
     String dbUri = Neo4jConfig.get("neo4j.uri");
     String user = Neo4jConfig.get("neo4j.user");
     String password = Neo4jConfig.get("neo4j.password");
-    driver = GraphDatabase.driver( dbUri , AuthTokens.basic( user, password ));
+
+    boolean shouldWait = Neo4jConfig.getBoolean("startup.wait");
+    int maxWaitTimeInSeconds = Neo4jConfig.getAsInt("startup.timeoutins");
+    int totalWaitTimeInSeconds = 0;
+    LOGGER.info("Creating connection");
+    do {
+      try {
+        LOGGER.info("Connecting to Neo4j at {}.", dbUri);
+        driver = GraphDatabase.driver(dbUri, AuthTokens.basic(user, password));
+      } catch(ServiceUnavailableException e) {
+        try {
+          LOGGER.info("Neo4j DB seems unavailable. This is expected during first startup using Docker. " +
+              "Waiting for 60s in addition (already waited {}s, will wait up to {}s in total).", totalWaitTimeInSeconds, maxWaitTimeInSeconds);
+          Thread.sleep(60000);
+          totalWaitTimeInSeconds += 60;
+
+          if (totalWaitTimeInSeconds >= maxWaitTimeInSeconds) {
+            throw new ServiceUnavailableException("Neo4j DB still seems unavailable after waiting " + totalWaitTimeInSeconds + "s. Giving up...");
+          }
+        } catch (InterruptedException ie) {
+          throw new RuntimeException(ie);
+        }
+      }
+    } while (driver == null && shouldWait && totalWaitTimeInSeconds < maxWaitTimeInSeconds);
   }
 
   @Override
