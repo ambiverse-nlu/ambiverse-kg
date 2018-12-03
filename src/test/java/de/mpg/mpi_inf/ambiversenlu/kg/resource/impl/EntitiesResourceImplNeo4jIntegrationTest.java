@@ -23,7 +23,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
-public class EntitiesResourceImplIntegrationNeo4jTest extends JerseyTest {
+public class EntitiesResourceImplNeo4jIntegrationTest extends JerseyTest {
 
   private static String PATH = "entities";
   private static final String ID_PREFIX = "http://www.wikidata.org/entity/";
