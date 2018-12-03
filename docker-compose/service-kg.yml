@@ -22,6 +22,6 @@ services:
     image: ambiverse/ambiverse-kg
     restart: always
     depends_on:
-      - db
+      - kg-db
     ports:
       - 8080:8080
