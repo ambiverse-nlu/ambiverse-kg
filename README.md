@@ -52,7 +52,7 @@ Then start the AmbiverseNLU Knowledge Graph container by linking the running Neo
 ~~~~~~~~
 docker run -d --restart=always --name ambiverse-kg \
  -p 8080:8080 \
- --link kg-db-neo4j:db \
+ --link kg-db-neo4j:kg-db \
  ambiverse/ambiverse-kg
 ~~~~~~~~
 

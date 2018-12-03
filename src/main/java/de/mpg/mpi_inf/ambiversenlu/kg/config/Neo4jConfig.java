@@ -44,6 +44,10 @@ public class Neo4jConfig {
     return value;
   }
 
+  public static boolean getBoolean(String key) {
+    return Boolean.parseBoolean(get(key));
+  }
+
   public static int getAsInt(String key) {
     String value = get(key);
     return Integer.parseInt(value);
