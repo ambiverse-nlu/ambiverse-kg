@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: ambiverse/kg-db-neo4j
+    restart: always
+    environment:
+      DUMP_NAME: yago_aida_en20180120_cs20180120_de20180120_es20180120_ru20180120_zh20180120
+      NEO4J_dbms_active__database: yago_aida_en20180120_cs20180120_de20180120_es20180120_ru20180120_zh20180120.db
+      NEO4J_dbms_memory_pagecache_size: 8G
+      NEO4J_dbms_memory_heap_initial__size: 8G
+      NEO4J_dbms_memory_heap_max__size: 12G
+      NEO4J_dbms_connectors_default__listen__address: 0.0.0.0
+      NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      NEO4J_AUTH: neo4j/neo4j_pass
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+    ulimits:
+      nofile:
+        40000:40000
+
+  nlu:
+    image: ambiverse/ambiverse-kg
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
