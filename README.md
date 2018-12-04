@@ -64,6 +64,8 @@ docker run -d --restart=always --name ambiverse-kg \
 ~~~~~~~~~~~~
 ./scripts/start_webservice.sh
 ~~~~~~~~~~~~
+
+
 You can the `MAVEN_OPTS` in the script if you want to change the port and the available memory. 
 
 ## Database dumps 
