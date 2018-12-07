@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/ambiverse-nlu/ambiverse-kg.svg?branch=master)](https://travis-ci.org/ambiverse-nlu/ambiverse-kg.svg?branch=master)
 [![DockerHub](https://img.shields.io/badge/docker-available-blue.svg?logo=docker)](https://hub.docker.com/r/ambiverse/ambiverse-kg)
+[![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+
 
 The AmbiverseNLU Knowledge Graph web service allows you to search and query the [YAGO](http://yago-knowledge.org) Knowledge Graph (imported to Neo4j), 
 providing you with detailed information for all canonical entities and the categories that are assigned to them (e.g. person, organization, location, etc.). 
