@@ -40,7 +40,7 @@ public class DaoNeo4j implements IDao, AutoCloseable{
   
   private static Driver driver;
    
-  public DaoNeo4j() {
+  public  DaoNeo4j() {
     String dbUri = Neo4jConfig.get("neo4j.uri");
     String user = Neo4jConfig.get("neo4j.user");
     String password = Neo4jConfig.get("neo4j.password");
@@ -68,42 +68,34 @@ public class DaoNeo4j implements IDao, AutoCloseable{
         }
       }
     } while (driver == null && shouldWait && totalWaitTimeInSeconds < maxWaitTimeInSeconds);
+
   }
 
   @Override
   public Map<String, Entity> getEntityMetadataByKbId(List<String> ids) {
     LOGGER.debug("Retrieving metadata for "+ids);
+
     Session session = driver.session();
-    
     String query = "MATCH (wd:WikidataInstance) \n"
         + "WHERE wd.url in $ids \n"
-        + "with wd \n"
-        + "OPTIONAL MATCH (e:Entity)-[:sameAs]-(wd) \n"
-        + "with wd, collect(e.entity) as names \n"
-        + "OPTIONAL MATCH (wd)-[:hasWikipediaUrl]->(wp:WikipediaUrl) \n"
-        + "with wd, names, collect(wp.url) as links \n"
-        + "OPTIONAL MATCH (wd)-[:hasImage]->(i:WikidataImage) \n"
-        + "with wd, names, links, i \n"
-        + "OPTIONAL MATCH (i)-[:hasLicense]->(l:WikidataImageLicense) \n"
-        + "with wd, names, links, i, collect(l) as licenses \n"
-        + "OPTIONAL MATCH (i)-[:hasAuthor]->(au:Author)\n"
-        + "with wd, names, links, licenses,  i.imageUrl as imageUrl, au as author \n"
-        + "OPTIONAL MATCH (wd)-[:hasType]->(t:Type) \n"
-        + "with wd, names, links, imageUrl, licenses, author, collect(t.type) as categories \n"
+        + "with wd, [ wd.shortDescriptions] as shortDescriptions,[ wd.longDescriptions] as longDescriptions, [(e:Entity)-[:sameAs]-(wd) | e.entity] as names, [(wd)-[:hasWikipediaUrl]->(wp:WikipediaUrl) | wp.url] as links \n"
+        + "OPTIONAL MATCH (wd)-[:hasImage]->(i:WikidataImage)\n"
+        + "with wd, shortDescriptions,longDescriptions, names, links, i, \n"
+        + "[(i)-[:hasLicense]->(l:WikidataImageLicense) | l] as licenses \n"
+        + "OPTIONAL MATCH (i)-[:hasAuthor]->(au:Author) \n"
+        + "with wd, shortDescriptions, longDescriptions, names, links, licenses,  i.imageUrl as imageUrl, au as author, [(wd)-[:hasType]->(t:Type) | t.type] as categories \n"
         + "OPTIONAL MATCH (wd)-[:hasGeoLocation]->(g:Location) \n"
-        + "with wd, names, links, imageUrl, licenses, author, categories, g as geo \n"
-        + "RETURN \n"
-        + "wd.url as id, \n"
+        + "with wd, shortDescriptions, longDescriptions, names, links, imageUrl, licenses, author, categories, g as geo \n"
+        + "RETURN wd.url as id, \n"
         + "names, \n"
-        + "collect(wd.shortDescriptions) as shortDescriptions, \n"
-        + "collect(wd.longDescriptions) as longDescriptions, \n"
+        + "shortDescriptions,\n"
+        + "longDescriptions,\n"
         + "links, \n"
         + "imageUrl, \n"
         + "licenses, \n"
         + "author, \n"
         + "categories, \n"
         + "geo";
-
 
     long startTime = System.currentTimeMillis();
     StatementResult qResult = session.run( query,
@@ -206,8 +198,8 @@ public class DaoNeo4j implements IDao, AutoCloseable{
       }
       result.put(e.getId(), e);
     }
-    session.close();
-    driver.close();
+    //session.close();
+    //driver.close();
     LOGGER.debug("Retrieval finished in {}ms", (System.currentTimeMillis()-startTime));
     return result;
   }
@@ -248,7 +240,6 @@ public class DaoNeo4j implements IDao, AutoCloseable{
       
       entityIDs.add(url);
     }
-    session.close();
     return entityIDs;
   }
 
