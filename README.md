@@ -25,7 +25,7 @@ docker-compose -f docker-compose/service-kg.yml up
 Wait for some time (depending on your internet connection and CPU speed it can easily take more than an hour), then call the service:
 
 ~~~~~~~~~~~~
-ccurl -X POST -H "Content-Type: application/json" \
+curl -X POST -H "Content-Type: application/json" \
       -d '[
             "http://www.wikidata.org/entity/Q1137062",
             "http://www.wikidata.org/entity/Q1359568"
