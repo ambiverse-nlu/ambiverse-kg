@@ -5,7 +5,7 @@
 
 	<groupId>de.mpg.mpi-inf.ambiversenlu</groupId>
 	<artifactId>ambiverse-kg</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>AmbiverseNLU Knowledge Graph Service</name>
 
 	<properties>
