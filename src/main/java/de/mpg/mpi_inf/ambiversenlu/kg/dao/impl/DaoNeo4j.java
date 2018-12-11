@@ -121,7 +121,7 @@ public class DaoNeo4j implements IDao, AutoCloseable{
 
       // Names
       if (!record.get("names").isNull() && !record.get("names").isEmpty()) {
-        Map<String, Label> names = getValuesByLangauge(record.get("names").asList(org.neo4j.driver.v1.Values.ofString()), true);
+        Map<String, Label> names = getValuesByLangauge(record.get("names").asList(Values.ofString()), true);
         e.setNames(names);
       }
 
@@ -289,23 +289,17 @@ public class DaoNeo4j implements IDao, AutoCloseable{
       Record record = qResult.next();
       
       String type = record.get("type").toString().replaceAll("\"", "");
-      String gloss = record.get("gloss").toString();
-      
-      if (gloss != null && gloss != "NULL") {
-        glosses.put(type, gloss);
-      }
-    }
-    session.close();
 
-    for (Map.Entry<String, Category> entry : result.entrySet()) {
-      String typeName = entry.getValue().getId().replaceAll("YAGO3:", "");
-      if (glosses.containsKey(typeName)) {
-        //c.setAdditionalProperty("gloss", glosses.get(typeName));
-        //TODO: Use getValuesByLangauge to get the glosses by language code from the list of glossses and add them to the descriptions map
-        //System.out.println(typeName+" --- "+glosses.get(typeName));
+      // Descriptions
+      if(!record.get("gloss").isNull() && !record.get("gloss").isEmpty()) {
+        Map<String, Label> descriptions = getValuesByLangauge(record.get("gloss").asList(Values.ofString()), false);
+        type = "YAGO3:"+type;
+        if(result.containsKey(type)) {
+          result.get(type).setDescriptions(descriptions);
+        }
       }
     }
-    
+
     return result;
   }
 
