@@ -126,13 +126,13 @@ public class DaoNeo4j implements IDao, AutoCloseable{
       }
 
       // Descriptions
-      if (!record.get("shortDescriptions").isNull() && !record.get("shortDescriptions").isEmpty()) {
+      if (!record.get("shortDescriptions").isNull() && !record.get("shortDescriptions").isEmpty() && !record.get("shortDescriptions").get(0).isNull()) {
         Map<String, Label> descriptions = getValuesByLangauge(record.get("shortDescriptions").get(0).asList(Values.ofString()), false);
         e.setDescriptions(descriptions);
       }
 
       // Long descriptions
-      if(!record.get("longDescriptions").isNull() && !record.get("longDescriptions").isEmpty()) {
+      if(!record.get("longDescriptions").isNull() && !record.get("longDescriptions").isEmpty() && !record.get("longDescriptions").get(0).isNull()) {
         Map<String, Label> detailDescriptions = getValuesByLangauge(record.get("longDescriptions").get(0).asList(Values.ofString()), false);
         e.setDetailedDescriptions(detailDescriptions);
       }
