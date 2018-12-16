@@ -1,5 +1,6 @@
 package de.mpg.mpi_inf.ambiversenlu.kg;
 
+import javax.inject.Singleton;
 import javax.ws.rs.ApplicationPath;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -24,7 +25,7 @@ public class KGApiApplication extends ResourceConfig {
             protected void configure() {
 
                 bind(DaoNeo4j.class).to(IDao.class)
-                    .named("DaoNeo4j").in(RequestScoped.class);
+                    .named("DaoNeo4j").in(Singleton.class);
 
             }
         };
