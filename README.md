@@ -94,7 +94,7 @@ Current Maintainers (in alphabetical order):
 
 Contributors (in alphabetical order):
 * Daniel Bär
-* Dragan Milchevski (former mantainer)
+* Dragan Milchevski (former maintainer)
 * Ghazale Haratinezhad Torbati
 * Johannes Hoffart
 * Luciano Del Corro
