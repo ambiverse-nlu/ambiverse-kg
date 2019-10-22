@@ -89,13 +89,12 @@ The database dumps can be downloaded from [http://ambiversenlu-download.mpi-inf.
 
 Current Maintainers (in alphabetical order):
 
-* Dragan Milchevski
 * Ghazale Haratinezhad Torbati
 * Johannes Hoffart
 
 Contributors (in alphabetical order):
 * Daniel Bär
-* Dragan Milchevski
+* Dragan Milchevski (former maintainer)
 * Ghazale Haratinezhad Torbati
 * Johannes Hoffart
 * Luciano Del Corro
