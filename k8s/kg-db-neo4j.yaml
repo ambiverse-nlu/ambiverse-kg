@@ -1,0 +1,127 @@
+#Create the kubernetes service
+apiVersion: v1
+kind: Service
+metadata:
+  name: kg-db-neo4j
+  namespace: ambiverse-kg
+spec:
+  clusterIP: None
+  ports:
+    - name: http
+      port: 7474
+      targetPort: 7474
+    - name: bolt
+      port: 7687
+  selector:
+    app: kg-db-neo4j
+---
+
+#Create the neo4j deployment
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kg-db-neo4j
+  namespace: ambiverse-kg
+spec:
+  selector:
+    matchLabels:
+      app: kg-db-neo4j
+  serviceName: kg-db-neo4j
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kg-db-neo4j
+    spec:
+      containers:
+        - name: kg-db-neo4j
+          image: ambiverse/kg-db-neo4j
+          resources:
+            limits:
+              memory: "16Gi"
+              cpu: "2"
+            requests:
+              memory: "16Gi"
+              cpu: "2"
+          ports:
+            - containerPort: 7474
+              name: http
+            - containerPort: 7687
+              name: bolt
+            - containerPort: 5000
+              name: discovery
+            - containerPort: 7000
+              name: raft
+            - containerPort: 6000
+              name: tx
+            - containerPort: 6362
+              name: backup
+# You might want to look at the comment below before uncommenting this block.
+#          volumeMounts:
+#            - mountPath: /data
+#              name:  kg-neo4j-data-volume
+#            - mountPath: /var/tmp/data
+#              name:  tmp-volume
+          env:
+            - name: DUMP_NAME
+              value: yago_aida_en20180120_cs20180120_de20180120_es20180120_ru20180120_zh20180120
+            - name: NEO4J_dbms_active__database
+              value: yago_aida_en20180120_cs20180120_de20180120_es20180120_ru20180120_zh20180120.db
+            - name: NEO4J_dbms_memory_pagecache_size
+              value: 12G
+            - name: NEO4J_dbms_memory_heap_initial__size
+              value: 12G
+            - name: NEO4J_dbms_memory_heap_max__size
+              value: 14G
+            - name: NEO4J_dbms_connectors_default__listen__address
+              value: 0.0.0.0
+            - name: NEO4J_dbms_security_procedures_unrestricted
+              value: apoc.*
+            - name: NEO4J_dbms_mode
+              value: CORE
+            - name: NUMBER_OF_CORES
+              value: "1"
+            - name: NEO4J_dbms_security_auth__enabled
+              value: "false"
+            - name: NEO4J_causal__clustering_discovery__type
+              value: DNS
+            - name: NEO4J_causal__clustering_initial__discovery__members
+              value: "kg-db-neo4j.ambiverse-kg.svc.cluster.local:5000"
+            - name: NEO4J_AUTH
+              value: neo4j/neo4j_pass
+          command:
+            - "/bin/bash"
+            - "-ecx"
+            - |
+              export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
+              export NEO4J_causal__clustering_discovery__advertised__address=$(hostname -f):5000
+              export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
+              export NEO4J_causal__clustering_raft__advertised__address=$(hostname -f):7000
+              exec /docker-entrypoint.sh "neo4j"
+      imagePullSecrets:
+        - name: regcred
+# Change the storage class before uncommenting the code below.
+#Have a look here:
+# * https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+# * https://kubernetes.io/docs/concepts/storage/storage-classes/
+#  volumeClaimTemplates:
+#    - metadata:
+#        name:  kg-neo4j-data-volume
+#        annotations:
+#          volume.beta.kubernetes.io/storage-class: "my-storage-class"
+#        namespace: ambiverse-kg
+#      spec:
+#        accessModes: [ "ReadWriteMany" ]
+#        resources:
+#          requests:
+#            storage: 100Gi
+#    - metadata:
+#        name:  tmp-volume
+#        annotations:
+#          volume.beta.kubernetes.io/storage-class: "my-storage-class"
+#        namespace: ambiverse-kg
+#        spec:
+#          accessModes: [ "ReadWriteMany" ]
+#          resources:
+#            requests:
+#              storage: 50Gi

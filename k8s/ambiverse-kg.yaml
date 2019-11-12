@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambiverse-kg-public
+  namespace: ambiverse-kg
+spec:
+  type: NodePort
+  selector:
+    app: ambiverse-kg
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambiverse-kg
+  namespace: ambiverse-kg
+spec:
+  clusterIP: None
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app: ambiverse-kg
+---
+
+apiVersion: "apps/v1"
+kind: StatefulSet
+metadata:
+  name: ambiverse-kg
+  namespace: ambiverse-kg
+spec:
+  serviceName: ambiverse-kg
+  selector:
+    matchLabels:
+      app: ambiverse-kg
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: ambiverse-kg
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: ambiverse-kg
+          image: ambiverse/ambiverse-kg
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "14Gi"
+              cpu: "2"
+            requests:
+              memory: "14Gi"
+              cpu: "2"
+          readinessProbe:
+            httpGet:
+              path: /v2/knowledgegraph/entities/Q567
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 60
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /v2/knowledgegraph/entities/Q567
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 60
+            failureThreshold: 10
+          env:
+            - name: JAVA_OPTIONS
+              value: -Xmx12G -Dorg.eclipse.jetty.annotations.maxWait=180
