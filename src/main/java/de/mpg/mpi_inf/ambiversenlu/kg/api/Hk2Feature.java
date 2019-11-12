@@ -2,7 +2,8 @@ package de.mpg.mpi_inf.ambiversenlu.kg.api;
 
 import de.mpg.mpi_inf.ambiversenlu.kg.dao.IDao;
 import de.mpg.mpi_inf.ambiversenlu.kg.dao.impl.DaoNeo4j;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+//import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 
 import javax.ws.rs.core.Feature;
@@ -19,7 +20,7 @@ public class Hk2Feature implements Feature {
             protected void configure() {
 
                 bind(DaoNeo4j.class).to(IDao.class)
-                    .named("DaoNeo4j").in(RequestScoped.class);
+                        .named("DaoNeo4j").in(RequestScoped.class);
 
             }
         };

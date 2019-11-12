@@ -21,6 +21,10 @@ Starting the AmbiverseNLU KG as web service (with Neo4j backend) using Docker is
 ~~~~~~~~~~~~
 docker-compose -f docker-compose/service-kg.yml up
 ~~~~~~~~~~~~
+or with docker stack:
+~~~~~~~~~~~~
+docker stack deploy -c docker-compose/service-kg.yml ambiverse-kg
+~~~~~~~~~~~~
 
 Wait for some time (depending on your internet connection and CPU speed it can easily take more than an hour), then call the service:
 
@@ -70,8 +74,12 @@ docker run -d --restart=always --name ambiverse-kg \
 ./scripts/start_webservice.sh
 ~~~~~~~~~~~~
 
-
 You can the `MAVEN_OPTS` in the script if you want to change the port and the available memory. 
+
+## Swagger UI for testing the API
+The service has build in [swagger-ui](https://github.com/swagger-api/swagger-ui/) that opens up if you type `http://localhost:8080/` in your browser. The `swagger-ui` loads the configuration from `v2/knowledgegraph/openapi.json` which is automatically created from the swagger annotations.
+
+If you have trouble starting the `swagger-ui` try to package the code with `mvn package` before you do `jetty:run`.
 
 ## Database dumps 
 The database dumps can be downloaded from [http://ambiversenlu-download.mpi-inf.mpg.de/](http://ambiversenlu-download.mpi-inf.mpg.de/). The database docker images will download them automatically.

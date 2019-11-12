@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-02-21T12:33:39.350Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2019-10-24T12:54:00.720Z[GMT]")
 public class CategoriesApiServiceImpl extends CategoriesApiService {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(CategoriesApiServiceImpl.class);
 
@@ -34,11 +34,11 @@ public class CategoriesApiServiceImpl extends CategoriesApiService {
             return Response.ok().entity(getDataAccess().getCategoriesMeta()).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.serverError().entity(new MessageResponse(ApiResponseMessage.ERROR, e.getMessage())).build();
+            return Response.serverError().entity(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage())).build();
         }
     }
     @Override
-    public Response categoriesPost(String authorization, CategoryRequest body,  Integer offset,  Integer limit, SecurityContext securityContext) throws NotFoundException {
+    public Response categoriesPost(List<String> body, String authorization,  Integer offset,  Integer limit, SecurityContext securityContext) throws NotFoundException {
         LOGGER.info("Input IDs: "+body+" offset: "+offset+" limit: "+limit);
         LOGGER.info("Getting category metadata for entity IDs: " + body +"size: "+body.size());
 
@@ -46,7 +46,7 @@ public class CategoriesApiServiceImpl extends CategoriesApiService {
             return Response.ok().entity(getCategoryMetadata(body, offset, limit)).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.serverError().entity(new MessageResponse(ApiResponseMessage.ERROR, e.getMessage())).build();
+            return Response.serverError().entity(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage())).build();
         }
 
     }

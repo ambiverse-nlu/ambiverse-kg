@@ -4,7 +4,7 @@ import de.mpg.mpi_inf.ambiversenlu.kg.api.EntitiesApi;
 import de.mpg.mpi_inf.ambiversenlu.kg.dao.IDao;
 import de.mpg.mpi_inf.ambiversenlu.kg.dao.impl.DaoNeo4j;
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -22,6 +22,8 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
+//import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
 /**
  * Entities Integration test
  */
@@ -36,7 +38,7 @@ public class EntitiesResourceImplIntegrationTest extends JerseyTest {
     AbstractBinder binder = new AbstractBinder() {
       @Override
       protected void configure() {
-        bind(DaoNeo4j.class).to(IDao.class).withMetadata("test", "test")
+        bind(DaoNeo4j.class).to(IDao.class)
             .named("DaoNeo4j").in(RequestScoped.class);
 
       }
