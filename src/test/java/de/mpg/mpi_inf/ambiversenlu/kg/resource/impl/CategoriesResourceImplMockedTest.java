@@ -6,7 +6,7 @@ import de.mpg.mpi_inf.ambiversenlu.kg.model.CategoriesResponse;
 import de.mpg.mpi_inf.ambiversenlu.kg.model.Category;
 import de.mpg.mpi_inf.ambiversenlu.kg.model.Meta;
 import de.mpg.mpi_inf.ambiversenlu.kg.resource.impl.mocks.MockedIDaoFactory;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -22,6 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+
+//import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 /**
  * Categories Unit test.

@@ -4,15 +4,16 @@ import de.mpg.mpi_inf.ambiversenlu.kg.dao.IDao;
 import de.mpg.mpi_inf.ambiversenlu.kg.model.Category;
 import de.mpg.mpi_inf.ambiversenlu.kg.model.Entity;
 import de.mpg.mpi_inf.ambiversenlu.kg.model.Meta;
-import org.glassfish.jersey.server.internal.inject.AbstractContainerRequestValueFactory;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.mockito.Mockito.*;
 
-public abstract class MockedIDaoFactory extends AbstractContainerRequestValueFactory<IDao> {
+public abstract class MockedIDaoFactory implements Supplier<IDao> {
 
-  @Override public IDao provide() {
+  @Override
+  public IDao get() {
     final IDao mockedDAO = mock(IDao.class);
 
     try {
@@ -64,8 +65,6 @@ public abstract class MockedIDaoFactory extends AbstractContainerRequestValueFac
   }
 
 
-  @Override public void dispose(IDao t) {
-  }
 }
 
 

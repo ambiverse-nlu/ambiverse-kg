@@ -1,12 +1,28 @@
 package de.mpg.mpi_inf.ambiversenlu.kg.api;
 
-import de.mpg.mpi_inf.ambiversenlu.kg.dao.IDao;
-import de.mpg.mpi_inf.ambiversenlu.kg.api.factories.CategoriesApiServiceFactory;
 
+import de.mpg.mpi_inf.ambiversenlu.kg.api.factories.CategoriesApiServiceFactory;
+import de.mpg.mpi_inf.ambiversenlu.kg.dao.IDao;
 import de.mpg.mpi_inf.ambiversenlu.kg.model.CategoriesResponse;
-import de.mpg.mpi_inf.ambiversenlu.kg.model.CategoryRequest;
+import de.mpg.mpi_inf.ambiversenlu.kg.model.MessageResponse;
 import de.mpg.mpi_inf.ambiversenlu.kg.model.Meta;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+
+import java.util.Map;
+import java.util.List;
+
+import java.io.InputStream;
+
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,90 +31,89 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.*;
+import javax.validation.constraints.*;
+
 
 @Path("/categories")
 
-@Produces({ "application/json" })
-@io.swagger.annotations.Api(description = "the categories API")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-02-21T12:33:39.350Z")
+
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaJerseyServerCodegen", date = "2019-10-24T12:54:00.720Z[GMT]")
 public class CategoriesApi  {
-   private final CategoriesApiService delegate;
+    private final CategoriesApiService delegate;
 
-  @Inject @Named("DaoNeo4j")
-  private IDao dataAccess;
+    @Inject
+    @Named("DaoNeo4j")
+    private IDao dataAccess;
 
-   public CategoriesApi(@Context ServletConfig servletContext) {
-      CategoriesApiService delegate = null;
+    public CategoriesApi(@Context ServletConfig servletContext) {
+        CategoriesApiService delegate = null;
 
-      if (servletContext != null) {
-         String implClass = servletContext.getInitParameter("CategoriesApi.implementation");
-         if (implClass != null && !"".equals(implClass.trim())) {
-            try {
-               delegate = (CategoriesApiService) Class.forName(implClass).newInstance();
-            } catch (Exception e) {
-               throw new RuntimeException(e);
+        if (servletContext != null) {
+            String implClass = servletContext.getInitParameter("CategoriesApi.implementation");
+            if (implClass != null && !"".equals(implClass.trim())) {
+                try {
+                    delegate = (CategoriesApiService) Class.forName(implClass).newInstance();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-         } 
-      }
+        }
 
-      if (delegate == null) {
-         delegate = CategoriesApiServiceFactory.getCategoriesApi();
-      }
+        if (delegate == null) {
+            delegate = CategoriesApiServiceFactory.getCategoriesApi();
+        }
 
-      this.delegate = delegate;
-   }
+        this.delegate = delegate;
+    }
 
     @GET
     @Path("/_meta")
-    
-    @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "", notes = "", response = Meta.class, authorizations = {
-        @io.swagger.annotations.Authorization(value = "ambiverse_auth", scopes = {
-            
-        })
-    }, tags={ "categories", })
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "OK", response = Meta.class),
-        
-        @io.swagger.annotations.ApiResponse(code = 404, message = "Not Found", response = Meta.class),
-        
-        @io.swagger.annotations.ApiResponse(code = 405, message = "Method Not Allowed", response = Meta.class),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error", response = Meta.class),
-        
-        @io.swagger.annotations.ApiResponse(code = 503, message = "Service Unavailable", response = Meta.class) })
-    public Response categoriesMetaGet(@ApiParam(value = "Your access token" ,required=true)@HeaderParam("Authorization") String authorization
-,@Context SecurityContext securityContext)
-    throws NotFoundException {
+
+    @Produces({ "application/json"})
+    @Operation(summary = "Meta information about the categories.", description = "Retrieves a meta information about the categories.", tags={ "Categories" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = Meta.class))),
+
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+
+            @ApiResponse(responseCode = "500", description = "Server Error", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+
+            @ApiResponse(responseCode = "503", description = "Service Unavailable", content = @Content(schema = @Schema(implementation = MessageResponse.class))) })
+    public Response categoriesMetaGet(
+            @Parameter(description = "Your access token" )@HeaderParam("Authorization") String authorization
+
+            ,@Context SecurityContext securityContext)
+            throws NotFoundException {
         this.delegate.setDataAccess(dataAccess);
         return delegate.categoriesMetaGet(authorization,securityContext);
     }
     @POST
-    
-    
+
+    @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @io.swagger.annotations.ApiOperation(value = "", notes = "Retrieves the collection of categories identified by their knowledge graph IDs. Use this method for batch fetching of categories. ", response = CategoriesResponse.class, authorizations = {
-        @io.swagger.annotations.Authorization(value = "ambiverse_auth", scopes = {
-            
-        })
-    }, tags={ "categories", })
-    @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "OK", response = CategoriesResponse.class),
-        
-        @io.swagger.annotations.ApiResponse(code = 404, message = "Not Found", response = CategoriesResponse.class),
-        
-        @io.swagger.annotations.ApiResponse(code = 405, message = "Method Not Allowed", response = CategoriesResponse.class),
-        
-        @io.swagger.annotations.ApiResponse(code = 500, message = "Server Error", response = CategoriesResponse.class),
-        
-        @io.swagger.annotations.ApiResponse(code = 503, message = "Service Unavailable", response = CategoriesResponse.class) })
-    public Response categoriesPost(@ApiParam(value = "Your access token" ,required=true)@HeaderParam("Authorization") String authorization
-,@ApiParam(value = "" ,required=true) CategoryRequest body
-,@ApiParam(value = "Skip over a number of items by specifying an offset value for the query.", defaultValue="0") @DefaultValue("0") @QueryParam("offset") Integer offset
-,@ApiParam(value = "Limit the number of items in the response.", defaultValue="10") @DefaultValue("10") @QueryParam("limit") Integer limit
-,@Context SecurityContext securityContext)
-    throws NotFoundException {
+    @Operation(summary = "Category Metadata.", description = "Retrieves a collection  of metadata for categories identified by their knowledge graph IDs. Use this method for batch fetching of categories. ", tags={ "Categories" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = CategoriesResponse.class))),
+
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+
+            @ApiResponse(responseCode = "500", description = "Server Error", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+
+            @ApiResponse(responseCode = "503", description = "Service Unavailable", content = @Content(schema = @Schema(implementation = MessageResponse.class))) })
+    public Response categoriesPost(@Parameter(description = "List of category IDs." ,required=true, schema = @Schema(example = "[ \"YAGO3:<wikicat_Billionaires>\" ]", description = "List of category IDs.")) List<String> body
+
+            ,
+                                   @Parameter(description = "Your access token" )@HeaderParam("Authorization") String authorization
+
+            ,@Parameter(description = "Skip over a number of items by specifying an offset value for the query.", schema = @Schema(example = "0")) @QueryParam("offset") @DefaultValue("0") Integer offset
+            ,@Parameter(description = "Limit the number of items in the response.", schema = @Schema(example = "10")) @QueryParam("limit") @DefaultValue("10") Integer limit
+            ,@Context SecurityContext securityContext)
+            throws NotFoundException {
         this.delegate.setDataAccess(dataAccess);
-        return delegate.categoriesPost(authorization,body,offset,limit,securityContext);
+        return delegate.categoriesPost(body,authorization,offset,limit,securityContext);
     }
 }

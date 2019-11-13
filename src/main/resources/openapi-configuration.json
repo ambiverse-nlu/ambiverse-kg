@@ -1,0 +1,27 @@
+{
+  "resourcePackages": [
+    "de.mpg.mpi_inf.ambiversenlu.kg"
+  ],
+  "prettyPrint" : true,
+  "cacheTTL": 0,
+  "openAPI": {
+    "info": {
+      "version": "v2",
+      "title": "Knowledge Graph Service",
+      "description": "The Knowledge Graph Web Service lets you find entities and categories in the knowledge graph. This service is particularly suited to be run as a second step after the NLU Service has been used for linking ambiguous names in natural-language texts to entities. With this service, you can now explore these entities further.",
+      "contact": {
+        "email": "ambiversenlu-admin@mpi-inf.mpg.de"
+      },
+      "termsOfService": "https://data-protection.mpi-klsb.mpg.de/inf/ambiversenlu.mpi-inf.mpg.de",
+      "license": {
+        "name": "Apache 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      }
+    },
+    "servers": [
+      {
+        "url": "/v2/knowledgegraph"
+      }
+    ]
+  }
+}

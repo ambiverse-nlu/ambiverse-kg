@@ -69,6 +69,19 @@ public class DaoNeo4j implements IDao, AutoCloseable{
       }
     } while (driver == null && shouldWait && totalWaitTimeInSeconds < maxWaitTimeInSeconds);
 
+    //Create the index on URL. This index creation is fast and it will only be called on the server start.
+    LOGGER.info("Creating an index on WikidataInstance(url) id");
+    Session session = driver.session();
+    String statement = "CREATE INDEX ON :WikidataInstance(url);";
+    session.run(statement);
+
+    LOGGER.info("Creating an index on Location(location);");
+    String statement2 = "CREATE INDEX ON :Location(location);";
+    session.run(statement2);
+
+    LOGGER.info("Creating index on the latitude/longitude.");
+    String statement3 = "CALL apoc.periodic.commit(\"MATCH (l:Location) where not exists(l.location) with l limit 10000 SET l.location =  point({latitude: l.latitude, longitude: l.longitude, crs: 'WGS-84'}) return count(l)\", {})";
+    session.run(statement3);
   }
 
   @Override
@@ -177,9 +190,8 @@ public class DaoNeo4j implements IDao, AutoCloseable{
 
       if(!record.get("geo").isNull() ) {
         GeoLocation location = new GeoLocation();
-
-        location.setLatitude(new BigDecimal(record.get("geo").asMap().get("latitude").toString()));
-        location.setLongitude(new BigDecimal(record.get("geo").asMap().get("longitude").toString()));
+        location.setLatitude(Float.valueOf(record.get("geo").asMap().get("latitude").toString()));
+        location.setLongitude(Float.valueOf(record.get("geo").asMap().get("longitude").toString()));
         e.setGeoLocation(location);
       }
 
@@ -194,7 +206,7 @@ public class DaoNeo4j implements IDao, AutoCloseable{
         //Set the most salient type
         e.setType(getEntityType(allTypes));
 
-        e.setCategories(new HashSet<>(allTypes));
+        e.setCategories(new ArrayList<>(allTypes));
       }
       result.put(e.getId(), e);
     }

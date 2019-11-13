@@ -8,7 +8,7 @@ import de.mpg.mpi_inf.ambiversenlu.kg.model.Label;
 import de.mpg.mpi_inf.ambiversenlu.kg.model.Meta;
 import de.mpg.mpi_inf.ambiversenlu.kg.resource.impl.mocks.MockedIDaoFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -27,6 +27,8 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
+//import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
 /**
  * Entities Unit Test
  */
@@ -41,7 +43,7 @@ public class EntitiesResourceImplMockedTest extends JerseyTest {
       Map<String, Entity> entities = new HashMap<>();
 
       //Categories
-      Set<String> categories1 = new HashSet<>();
+      List<String> categories1 = new ArrayList<>();
       categories1.add("YAGO3:<wordnet_physical_entity_100001930>");
       categories1.add("YAGO3:<wikicat_Atco_Records_artists>");
       categories1.add("YAGO3:<wikicat_British_Invasion_artists>");
@@ -94,7 +96,7 @@ public class EntitiesResourceImplMockedTest extends JerseyTest {
 
 
       //Categories
-      Set<String> categories2 = new HashSet<>();
+      List<String> categories2 = new ArrayList<>();
       categories2.add("YAGO3:<wordnet_physical_entity_100001930>");
       categories2.add("YAGO3:<wordnet_product_104007894>");
       categories2.add("YAGO3:<wikicat_The_Who_albums>");

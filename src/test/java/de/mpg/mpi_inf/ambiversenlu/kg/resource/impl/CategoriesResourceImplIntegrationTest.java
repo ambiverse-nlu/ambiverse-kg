@@ -18,6 +18,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+//import org.glassfish.jersey.internal.inject.AbstractBinder;
+
 /**
  * Categories Integration test
  */
@@ -30,7 +32,7 @@ public class CategoriesResourceImplIntegrationTest extends JerseyTest {
 
     AbstractBinder binder = new AbstractBinder() {
       @Override protected void configure() {
-        bind(DaoNeo4j.class).to(IDao.class).withMetadata("test", "test").named("DaoNeo4j").in(RequestScoped.class);
+        bind(DaoNeo4j.class).to(IDao.class).named("DaoNeo4j").in(RequestScoped.class);
       }
     };
 
